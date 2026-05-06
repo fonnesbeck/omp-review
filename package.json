@@ -2,6 +2,7 @@
   "name": "cutie-pi",
   "version": "1.0.0",
   "description": "Custom pi extensions and skills",
+  "license": "MIT",
   "keywords": ["pi-package"],
   "pi": {
     "extensions": ["./extensions"],
