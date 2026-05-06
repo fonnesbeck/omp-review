@@ -1,0 +1,10 @@
+{
+  "name": "cutie-pi",
+  "version": "1.0.0",
+  "description": "Custom pi extensions and skills",
+  "keywords": ["pi-package"],
+  "pi": {
+    "extensions": ["./extensions"],
+    "skills": ["./skills"]
+  }
+}
