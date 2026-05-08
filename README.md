@@ -1,6 +1,6 @@
 # cutie-pi
 
-![cutie-pi logo](cutie-pi-logo.png)
+<img src="cutie-pi-logo.png" alt="cutie-pi logo" width="200">
 
 **cutie-pi** is a custom [pi](https://github.com/mariozechner/pi) package that adds extensions and skills to the pi coding agent — a toolkit for better coding workflows.
 
