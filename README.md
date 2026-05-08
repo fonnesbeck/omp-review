@@ -25,6 +25,8 @@ The package currently includes the following tools, with more on the way:
 |-------|-------------|
 | [`code-simplifier`](skills/code-simplifier/SKILL.md) | System instructions injected during a simplification turn. Focuses on preserving functionality while applying project-specific standards and improving readability. |
 | [`socratic-review`](skills/socratic-review/SKILL.md) | Rigorous Socratic questioning to stress-test a plan or design. Invoke with "review my plan," "grill me," or `/skill:socratic-review`. Produces a `DECISION_LOG.md` at the end. |
+| [`review-plans`](skills/review-plans/SKILL.md) | Pre-execution audit of software and data-science project plans. Invoke with "review this plan," "audit this proposal," or `/skill:review-plans`. Produces a categorized severity report (`REVIEW.md`) using the PCS framework for data-science plans. |
+| [`review-implementation`](skills/review-implementation/SKILL.md) | Compares a finished implementation against its original plan to identify gaps, divergences, and efficiency opportunities. Invoke with "compare this to the plan," "review implementation," or `/skill:review-implementation`. Produces `IMPLEMENTATION_REVIEW.md`. |
 
 ## Installation
 
