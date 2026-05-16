@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "Custom pi extensions and skills",
   "license": "MIT",
-  "keywords": ["pi-package"],
+  "keywords": ["pi-package", "theme"],
   "pi": {
     "extensions": ["./extensions"],
-    "skills": ["./skills"]
+    "skills": ["./skills"],
+    "themes": ["./themes"]
   }
 }
