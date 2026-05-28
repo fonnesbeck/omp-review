@@ -226,6 +226,9 @@ controls are needed; session files are user-local and contain no secrets).
 If the move fails (permissions, disk), warn the user and leave the file in
 place. Do not delete.
 
+Archived sessions accumulate. The `.adopted/` directory can be safely purged
+at any time.
+
 ### 5. Confirm adoption
 
 Briefly confirm to the user which session was adopted and what the immediate
