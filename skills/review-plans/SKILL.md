@@ -32,9 +32,8 @@ and produce concrete, shareable feedback that the original developer can act on.
      strategy)?"
    - "Who is the audience for this review — the author, a tech lead, or
      stakeholders?"
-   - "Are there any red flags (known risks, concerns, or unresolved questions)
-     or yellow flags (areas you are unsure about, decisions that feel shaky)
-     you already see in this plan?"
+   - "Are there specific risks or concerns you already see that I should
+     weigh more heavily in my review?"
 
 2. **Classify the plan type.** Infer from content whether the plan is:
    - General software / infrastructure
@@ -128,18 +127,24 @@ and produce concrete, shareable feedback that the original developer can act on.
    mandate these tools — use them as examples when they fit.
 
 5. **Synthesize findings.** Group all observations into the categories above.
-   Assign a severity to every finding:
-   - **Critical** — A blocker that must be resolved before execution. High risk
-     of project failure, data leakage, security breach, or unrecoverable cost.
-   - **Warning** — A significant risk or gap that should be addressed before or
-     during execution. May not block starting, but will likely cause pain.
-   - **Note** — A minor improvement, best-practice suggestion, or question for
-     the author to consider.
+   You MUST assign one severity label to every finding and use the emoji markers
+   in the output. No finding should appear without a severity.
+   - 🔴 **Critical** — A blocker that must be resolved before execution. High
+     risk of project failure, data leakage, security breach, or unrecoverable
+     cost.
+   - 🟡 **Warning** — A significant risk or gap that should be addressed before
+     or during execution. May not block starting, but will likely cause pain.
+   - 🟢 **Note** — A minor improvement, best-practice suggestion, or question
+     for the author to consider.
 
-6. **Produce the report.** Write a categorized markdown report. If the plan is
-   substantial (more than a few paragraphs or multiple files), write the report
-   to a file named `REVIEW.md` in the project root. Always provide a brief
-   summary in chat.
+   Actively look for problems. A review with no Critical or Warning findings is
+   almost certainly too lenient. Even solid plans have risks worth flagging.
+
+6. **Produce the report.** Write the report using the exact output format
+   defined below (with 🔴/🟡/🟢 markers, Evidence/Risk/Recommendation/Why
+   blocks). If the plan is substantial (more than a few paragraphs or multiple
+   files), write the report to a file named `REVIEW.md` in the project root.
+   Always provide a brief summary in chat.
 
 ## Constraints
 
