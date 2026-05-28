@@ -34,6 +34,9 @@ You do not modify any files. You only observe, compare, and report.
      clarifying question to locate the other.
    - If multiple candidate plans exist, list the filenames and ask the user
      which one to use.
+   - Ask whether there are any red flags (known gaps, broken features,
+     concerns) or yellow flags (areas that feel incomplete, decisions you
+     are unsure about) they already see in the implementation.
 
 2. **Parse the plan into a requirement map.** Read the plan carefully and
    extract every specific commitment, decision, or requirement. Group them by
