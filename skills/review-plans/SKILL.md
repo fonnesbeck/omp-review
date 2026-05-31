@@ -143,8 +143,8 @@ and produce concrete, shareable feedback that the original developer can act on.
 6. **Produce the report.** Write the report using the exact output format
    defined below (with 🔴/🟡/🟢 markers, Evidence/Risk/Recommendation/Why
    blocks). If the plan is substantial (more than a few paragraphs or multiple
-   files), write the report to a file named `REVIEW.md` in the project root.
-   Always provide a brief summary in chat.
+   files), write the report to a file named `REVIEW.md` in the **same
+   directory as the plan file**. Always provide a brief summary in chat.
 
 ## Constraints
 
