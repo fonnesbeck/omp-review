@@ -2,7 +2,9 @@
 
 <img src="cutie-pi-logo.png" alt="cutie-pi logo" width="200">
 
-**cutie-pi** is a custom [pi](https://github.com/mariozechner/pi) package that adds extensions and skills to the pi coding agent — a toolkit for better coding workflows.
+**cutie-pi** is a personal [pi](https://github.com/mariozechner/pi) toolkit — a collection of extensions, skills, and themes that I use every day. It is not a product to install and forget. It is a starting point to copy, mutate, and make your own.
+
+If you see something you like, take it. If you do not like how a skill phrases its instructions, rewrite it — or ask pi to rewrite it for you. If an extension almost fits your workflow, change the code, or tell pi what you want and let it scaffold the changes. The pi harness is built for this.
 
 ## What's Inside
 
@@ -30,6 +32,7 @@ The package currently includes the following tools, with more on the way:
 | [`review-implementation`](skills/review-implementation/SKILL.md) | Compares a finished implementation against its original plan to identify gaps, divergences, and efficiency opportunities. Invoke with "compare this to the plan," "review implementation," or `/skill:review-implementation`. Produces `IMPLEMENTATION_REVIEW.md`. |
 | [`transfer-session`](skills/transfer-session/SKILL.md) | Save the current session state to a durable markdown file, or adopt a previously saved session into the current conversation. Invoke with "transfer session," "save session," "adopt session," or "pick up where I left off." |
 | [`todoist-time-blocking`](skills/todoist-time-blocking/SKILL.md) | Plan and review work on a daily and weekly cadence using a prioritized task slate (inspired by the Ivy Lee method) with Todoist time-blocking. Provides `plan_day`, `nightly_review`, and `weekly_review` functions. Depends on the `todoist-api` skill and `gws-calendar` tools. |
+| [`slidev`](skills/slidev/SKILL.md) | Opinionated guidance for building effective technical presentations with [Slidev](https://sli.dev), focused on data science, statistics, and developer talks. Covers Slidev syntax, the neversink/the-unnamed themes, visual design principles, storytelling structure, and export workflows. Invoke when building, editing, reviewing, or exporting slide decks. |
 
 ### Themes
 
@@ -38,15 +41,19 @@ The package currently includes the following tools, with more on the way:
 | [`cobalt2`](themes/cobalt2.json) | A high-contrast blue theme inspired by the classic Cobalt 2 color palette. |
 | [`cutie-pi`](themes/cutie-pi.json) | A warm dark theme with soft orange and purple accents. |
 
-## Installation
+## How to Use This
 
-1. **Clone or copy** this repository into a directory of your choice:
+The fastest way to benefit is to cherry-pick what you need. Copy a single skill, an extension, or a theme into your own pi setup and adapt it.
+
+If you want the whole thing:
+
+1. **Clone or copy** this repository:
    ```bash
    git clone https://github.com/fonnesbeck/cutie-pi.git
    cd cutie-pi
    ```
 
-2. **Install as a local pi package** by adding the path to your pi configuration. In your `~/.pi/config.json`:
+2. **Install as a local pi package** in your `~/.pi/config.json`:
    ```json
    {
      "packages": [
@@ -55,12 +62,14 @@ The package currently includes the following tools, with more on the way:
    }
    ```
 
-   Or install directly via the pi CLI:
+   Or use the pi CLI:
    ```bash
    pi install /path/to/cutie-pi
    ```
 
-3. **Restart pi** (or reload packages) to load the extensions and skills.
+3. **Restart pi** to load everything.
+
+Then start changing things. Rename a skill. Tighten a prompt. Add a new extension. The value is in the customization, not the defaults.
 
 ## Requirements
 
