@@ -2,9 +2,9 @@
 
 <img src="cutie-pi-logo.png" alt="cutie-pi logo" width="200">
 
-**cutie-pi** is a personal [pi](https://github.com/mariozechner/pi) toolkit — a collection of extensions, skills, and themes that I use every day. It is not a product to install and forget. It is a starting point to copy, mutate, and make your own.
+**cutie-pi** is a personal [pi](https://github.com/mariozechner/pi) toolkit: a collection of extensions, skills, and themes that I use every day. It is not a product to install and forget. It is a starting point to copy, mutate, and make your own.
 
-If you see something you like, take it. If you do not like how a skill phrases its instructions, rewrite it — or ask pi to rewrite it for you. If an extension almost fits your workflow, change the code, or tell pi what you want and let it scaffold the changes. The pi harness is built for this.
+If you see something you like, take it. If you do not like how a skill phrases its instructions, rewrite it (or ask pi to rewrite it for you). If an extension almost fits your workflow, change the code, or tell pi what you want and let it scaffold the changes. The pi harness is built for this.
 
 ## What's Inside
 
@@ -26,6 +26,7 @@ The package currently includes the following tools, with more on the way:
 
 | Skill | Description |
 |-------|-------------|
+| [`address-review`](skills/address-review/SKILL.md) | Triage and act on a review/feedback document, finding-by-finding. Invoke with "address this review," "resolve findings," "triage review," or `/skill:address-review`. Produces a per-finding disposition report (Resolved / Won't fix / Partially resolved). |
 | [`audit-skills`](skills/audit-skills/SKILL.md) | Audit a directory of skills for visibility, deterministic vs non-deterministic behavior, and composability. Produces a structured report with per-skill ratings and cross-cutting findings. |
 | [`code-simplifier`](skills/code-simplifier/SKILL.md) | System instructions injected during a simplification turn. Focuses on preserving functionality while applying project-specific standards and improving readability. |
 | [`lessons-learned`](skills/lessons-learned/SKILL.md) | Automatically augment a skill after friction, misunderstandings, or back-and-forth correction. Invoke with "that was painful," "fix that skill," or `/skill:lessons-learned`. Surgically edits the target skill's `SKILL.md` so future invocations incorporate the correction. |
