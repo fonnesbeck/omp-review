@@ -2,9 +2,9 @@
 
 <img src="cutie-pi-logo.png" alt="cutie-pi logo" width="200">
 
-**cutie-pi** is a personal [pi](https://github.com/mariozechner/pi) toolkit: a collection of extensions, skills, and themes that I use every day. It is not a product to install and forget. It is a starting point to copy, mutate, and make your own.
+**cutie-pi** is a personal [Oh My Pi](https://github.com/can1357/oh-my-pi) / pi toolkit: a collection of extensions, skills, and themes that I use every day. It is not a product to install and forget. It is a starting point to copy, mutate, and make your own.
 
-If you see something you like, take it. If you do not like how a skill phrases its instructions, rewrite it (or ask pi to rewrite it for you). If an extension almost fits your workflow, change the code, or tell pi what you want and let it scaffold the changes. The pi harness is built for this.
+If you see something you like, take it. If you do not like how a skill phrases its instructions, rewrite it (or ask omp to rewrite it for you). If an extension almost fits your workflow, change the code, or tell omp what you want and let it scaffold the changes. The harness is built for this.
 
 ## What's Inside
 
@@ -44,11 +44,11 @@ The package currently includes the following tools, with more on the way:
 | [`cobalt2`](themes/cobalt2.json) | A high-contrast blue theme inspired by the classic Cobalt 2 color palette. |
 | [`cutie-pi`](themes/cutie-pi.json) | A warm dark theme with soft orange and purple accents. |
 
-## How to Use This
+## How to Use This with Oh My Pi
 
-The fastest way to benefit is to cherry-pick what you need. Copy a single skill, an extension, or a theme into your own pi setup and adapt it.
+The fastest way to benefit is to cherry-pick what you need. Copy a single skill, extension, or theme into your own OMP setup and adapt it.
 
-If you want the whole thing:
+If you want the whole package, install it as a linked local OMP plugin:
 
 1. **Clone or copy** this repository:
    ```bash
@@ -56,28 +56,33 @@ If you want the whole thing:
    cd cutie-pi
    ```
 
-2. **Install as a local pi package** in your `~/.pi/config.json`:
-   ```json
-   {
-     "packages": [
-       "/path/to/cutie-pi"
-     ]
-   }
-   ```
-
-   Or use the pi CLI:
+2. **Link it into OMP**:
    ```bash
-   pi install /path/to/cutie-pi
+   omp plugin link /path/to/cutie-pi
    ```
 
-3. **Restart pi** to load everything.
+   For this checkout, that would be:
+   ```bash
+   omp plugin link ~/repos/cutie-pi
+   ```
+
+3. **Restart or reload OMP** to load the skills, extensions, and themes.
+
+Linking is better than copying when you are actively customizing the package: OMP symlinks the local repository, so changes you make here are available after the next restart or reload.
+
+The package currently declares its capabilities through the legacy `pi` manifest key in `package.json`, which OMP still accepts. If you only want a subset, copy or symlink individual directories into the native OMP locations instead:
+
+```text
+~/.omp/agent/skills/
+~/.omp/agent/extensions/
+```
 
 Then start changing things. Rename a skill. Tighten a prompt. Add a new extension. The value is in the customization, not the defaults.
 
 ## Requirements
 
-- [pi](https://github.com/mariozechner/pi) coding agent
-- Node.js (for TypeScript extensions)
+- [Oh My Pi](https://github.com/can1357/oh-my-pi) (`omp`)
+- Node.js or Bun-compatible TypeScript extension loading
 
 ## License
 
