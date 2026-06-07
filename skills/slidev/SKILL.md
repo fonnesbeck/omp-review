@@ -46,6 +46,22 @@ references for the same task.
 | Export PDF/SPA or set up CI deployment | [references/exporting.md](references/exporting.md) |
 | Use a built-in component (Link, Toc, VClick, etc.) | [references/components.md](references/components.md) |
 
+
+## Editing an existing deck
+
+- Before changing visual design in an established deck, inspect the surrounding slides and any reference decks the user names. Reuse a pattern already present unless the user explicitly asks for a new visual direction.
+- Preserve the deck's flow. A request to improve one slide is not permission to add new concepts, equations, layouts, color schemes, components, or visual metaphors. Fix the stated problem at the smallest scope that solves it.
+- If the user asks for a specific dimension ("typeface", "color scheme", "spacing", "layout"), change that dimension only. Do not redesign structure while claiming to adjust typography.
+- When uncertain about what "better" means, ask before editing. Prefer one short question with 2-3 concrete options grounded in existing deck patterns.
+- Always visually inspect the slide after editing and compare it to adjacent slides. Name the actual visual issue observed (e.g. labels too small, weight too heavy, color inconsistent) before making additional changes.
+- Generic frontend design advice does not override deck conventions. Slidev theme defaults, existing slide patterns, and user-provided examples are the source of truth.
+
+## Launching an existing deck
+
+- When asked to launch or open Slidev slides, inspect the deck's `package.json` scripts first and run the existing script/CLI from the deck directory. Do not invent CLI flags; confirm flags with `slidev --help` only if the script is unclear.
+- For presenter mode, use the exact URL printed by Slidev's server output (including host and trailing slash), typically `http://localhost:<port>/presenter/`. Do not substitute `127.0.0.1` for `localhost` unless the server output says so.
+- After starting the server, open the presenter URL directly. If opening fails, check the server log/process immediately before retrying with a different URL.
+
 ## Resources
 
 - Slidev documentation: https://sli.dev

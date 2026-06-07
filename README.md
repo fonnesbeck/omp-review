@@ -15,7 +15,7 @@ The package currently includes the following tools, with more on the way:
 | Extension | Description |
 |-----------|-------------|
 | [`code-simplifier`](extensions/code-simplifier.ts) | Tracks files modified during an agent run and can automatically (or on-demand) trigger a follow-up pass that simplifies and refines the code for clarity, consistency, and maintainability. |
-| [`nu-user-bash`](extensions/nu-user-bash.ts) | Intercepts `user_bash` events to route commands through Nushell instead of the default shell. |
+| [`nu-user-bash`](extensions/nu-user-bash.ts) | Intercepts `user_bash` events and executes commands through Nushell (`nu -c`) instead of the default shell. Honors `PI_USER_NU_SHELL` for a custom Nushell path and disables itself if Nushell is unavailable. |
 
 **Commands added:**
 - `/simplify` — Manually run simplification on recently modified files.
@@ -30,13 +30,15 @@ The package currently includes the following tools, with more on the way:
 | [`audit-skills`](skills/audit-skills/SKILL.md) | Audit a directory of skills for visibility, deterministic vs non-deterministic behavior, and composability. Produces a structured report with per-skill ratings and cross-cutting findings. |
 | [`code-simplifier`](skills/code-simplifier/SKILL.md) | System instructions injected during a simplification turn. Focuses on preserving functionality while applying project-specific standards and improving readability. |
 | [`lessons-learned`](skills/lessons-learned/SKILL.md) | Automatically augment a skill after friction, misunderstandings, or back-and-forth correction. Invoke with "that was painful," "fix that skill," or `/skill:lessons-learned`. Surgically edits the target skill's `SKILL.md` so future invocations incorporate the correction. |
+| [`nushell`](skills/nushell/SKILL.md) | Practical guidance for writing and running Nushell commands, scripts, and structured-data pipelines. Covers MCP and `nu -c` execution, Bash-to-Nushell translations, common syntax gotchas, and references for JSON/YAML/TOML/CSV/Parquet/SQLite workflows. |
 | [`plan-viz`](skills/plan-viz/SKILL.md) | Create a rich, self-contained HTML visualization of an implementation plan. Invoke with "visualize my plan," "plan overview," or "show me the plan." Gathers plan content from conversation or files and produces a styled HTML artifact with phases, architecture, code excerpts, risks, and success criteria. |
 | [`review-implementation`](skills/review-implementation/SKILL.md) | Compares a finished implementation against its original plan to identify gaps, divergences, and efficiency opportunities. Invoke with "compare this to the plan," "review implementation," or `/skill:review-implementation`. Produces `IMPLEMENTATION_REVIEW.md`. |
 | [`review-plans`](skills/review-plans/SKILL.md) | Pre-execution audit of software and data-science project plans. Invoke with "review this plan," "audit this proposal," or `/skill:review-plans`. Produces a categorized severity report (`REVIEW.md`) using the PCS framework for data-science plans. |
 | [`socratic-review`](skills/socratic-review/SKILL.md) | Rigorous Socratic questioning to stress-test a plan or design. Invoke with "review my plan," "grill me," or `/skill:socratic-review`. Produces a `DECISION_LOG.md` at the end. |
-| [`slidev`](skills/slidev/SKILL.md) | Opinionated guidance for building effective technical presentations with [Slidev](https://sli.dev), focused on data science, statistics, and developer talks. Covers Slidev syntax, the neversink/the-unnamed themes, visual design principles, storytelling structure, and export workflows. Invoke when building, editing, reviewing, or exporting slide decks. |
+| [`slidev`](skills/slidev/SKILL.md) | Opinionated guidance for building, editing, launching, reviewing, and exporting technical presentations with [Slidev](https://sli.dev). Covers neversink/the-unnamed themes, visual design, storytelling, code/math/diagram slides, and existing-deck edit guardrails. |
 | [`todoist-time-blocking`](skills/todoist-time-blocking/SKILL.md) | Plan and review work on a daily and weekly cadence using a prioritized task slate (inspired by the Ivy Lee method) with Todoist time-blocking. Provides `plan_day`, `nightly_review`, and `weekly_review` functions. Depends on the `todoist-api` skill and `gws-calendar` tools. |
 | [`transfer-session`](skills/transfer-session/SKILL.md) | Save the current session state to a durable markdown file, or adopt a previously saved session into the current conversation. Invoke with "transfer session," "save session," "adopt session," or "pick up where I left off." |
+
 ### Themes
 
 | Theme | Description |
@@ -70,7 +72,7 @@ If you want the whole package, install it as a linked local OMP plugin:
 
 Linking is better than copying when you are actively customizing the package: OMP symlinks the local repository, so changes you make here are available after the next restart or reload.
 
-The package currently declares its capabilities through the legacy `pi` manifest key in `package.json`, which OMP still accepts. If you only want a subset, copy or symlink individual directories into the native OMP locations instead:
+The package currently declares its capabilities through the `pi` manifest key in `package.json`, which OMP accepts. If you only want a subset, copy or symlink individual directories into the native OMP locations instead:
 
 ```text
 ~/.omp/agent/skills/
@@ -83,6 +85,7 @@ Then start changing things. Rename a skill. Tighten a prompt. Add a new extensio
 
 - [Oh My Pi](https://github.com/can1357/oh-my-pi) (`omp`)
 - Node.js or Bun-compatible TypeScript extension loading
+- [Nushell](https://www.nushell.sh/) for the `nu-user-bash` extension and `nushell` skill workflows; set `PI_USER_NU_SHELL` if `nu` is not on `PATH`
 
 ## License
 
