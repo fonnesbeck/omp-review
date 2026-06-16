@@ -38,7 +38,6 @@ The package currently includes the following tools, with more on the way:
 | [`socratic-review`](skills/socratic-review/SKILL.md) | Rigorous Socratic questioning to stress-test a plan or design. Invoke with "review my plan," "grill me," or `/skill:socratic-review`. Produces a `DECISION_LOG.md` at the end. |
 | [`slidev`](skills/slidev/SKILL.md) | Opinionated guidance for building, editing, launching, reviewing, and exporting technical presentations with [Slidev](https://sli.dev). Covers neversink/the-unnamed themes, visual design, storytelling, code/math/diagram slides, and existing-deck edit guardrails. |
 | [`todoist-time-blocking`](skills/todoist-time-blocking/SKILL.md) | Plan and review work on a daily and weekly cadence using a prioritized task slate (inspired by the Ivy Lee method) with Todoist time-blocking. Provides `plan_day`, `nightly_review`, and `weekly_review` functions. Depends on the `todoist-api` skill and `gws-calendar` tools. |
-| [`transfer-session`](skills/transfer-session/SKILL.md) | Save the current session state to a durable markdown file, or adopt a previously saved session into the current conversation. Invoke with "transfer session," "save session," "adopt session," or "pick up where I left off." |
 
 ### Themes
 
