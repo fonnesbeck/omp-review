@@ -1,155 +1,144 @@
 ---
 name: review-loop
 description: >-
-  Iteratively review and improve a plan until independent review concerns are
-  resolved. Use this skill when the user asks to "run a review loop", "review
-  and address until clean", "spawn a reviewer and integrate comments", "repeat
-  review until all concerns are resolved", or wants a reusable workflow that
-  combines review-plans with address-review. It spawns an independent reviewer
-  subagent for each pass, updates the plan finding-by-finding, and produces a
-  disposition trail plus an explicit closure or incomplete-loop summary.
+  Iteratively review and improve a plan until an independent review has no
+  remaining actionable concerns. A bounded wrapper that runs `review-plans` in a
+  fresh independent reviewer subagent each pass and revises the plan with the
+  `address-review` triage pattern. Use this skill when the user asks to "run a
+  review loop", "review and address until clean", "spawn a reviewer and integrate
+  comments", "repeat review until all concerns are resolved", or wants a reusable
+  loop that combines review-plans with address-review.
 ---
 
 # Review Loop
 
-Use this when the deliverable is a plan, proposal, RFC, implementation design,
-or similar pre-execution artifact that should be stress-tested and revised until
-an independent reviewer has no remaining actionable concerns.
+Use this when the deliverable is a plan, proposal, RFC, implementation design, or
+similar pre-execution artifact that should be stress-tested and revised until an
+independent reviewer has no remaining actionable concerns.
 
-The point of the loop is independence. The reviewer should not share the same
-mental state as the authoring/addressing pass. Spawn a fresh reviewer subagent
-for each review pass, then integrate the review yourself. Borrow only the
-`address-review` finding-by-finding triage and disposition pattern: verify each
-finding, resolve it in the plan or explicitly decline it with evidence, and keep
-a per-finding disposition trail. For plan-only edits, verification means checking
-the revised plan and referenced repo context; do not run builds, tests, linters,
-or formatters unless executable artifacts changed.
+This skill is a thin protocol around two existing skills — `review-plans` (how to
+review) and `address-review` (how to triage each finding). It adds only the loop
+contract: independence, bounded passes, deterministic artifacts, and an explicit
+stop condition. Do not restate how to review or how to judge a finding; defer to
+those skills.
+
+## The three primitives
+
+Model each run on three semantics. These are the conceptual frame, not commands
+to type. `omp` exposes `goal.*` and `loop.*` as settings and `/plan` as a mode
+that makes spawned subagents read-only; this skill reproduces their behavior as a
+protocol and never invokes the slash commands:
+
+- **Goal** — one objective with one stop condition: the latest independent review
+  is clean, or every remaining finding is explicitly closed as non-actionable.
+  The loop exists only to reach it.
+- **Loop** — bounded iteration. `max_passes=3` by default; each pass is
+  review → revise → re-review. Stop at the Goal or the bound; never spin.
+- **Plan** — every reviewer is a fresh subagent that never edits the plan; it
+  reads and reports. The main agent is the only writer of the plan. This mirrors
+  plan mode, where spawned subagents are read-only. Where each pass's report is
+  stored depends on the main agent's own writability (see **Artifacts**); the
+  reviewer only ever reads and reports.
 
 ## Inputs
 
-Accept any of these as the plan source:
+Accept any of these as the plan source: a path to a plan file, a `local://...`
+planning artifact, a plan in the current conversation, or a directory of
+candidate plan files. If the target is a directory or ambiguous, inspect likely
+plan files before asking; ask only when multiple plausible candidates remain.
 
-- A path to a plan file.
-- A `local://...` planning artifact.
-- A plan in the current conversation.
-- A directory containing candidate plan files.
+If the plan exists only in conversation, write it to a `local://` artifact first,
+then loop against that file so every pass reviews the same text.
 
-If the user provides a directory or ambiguous target, inspect likely plan files
-before asking. Ask only when multiple plausible candidates remain.
+## Protocol
 
-If the plan exists only in conversation, write it to a `local://` artifact before
-starting. Loop against that file so every reviewer pass sees the same current
-plan text.
-
-## Core workflow
-
-1. **Prepare the working plan.**
+1. **Prepare.**
    - Read the plan artifact.
-   - If the plan has unresolved scope or success-criteria ambiguity, use
-     `socratic-review` first. Fold the resulting decisions into the working plan
-     or write them to a loop-owned `local://REVIEW_DECISIONS.md` artifact. Do not
-     rely on a repo-root `DECISION_LOG.md` as the loop artifact unless the user
-     explicitly wants repo-local planning files.
-   - Set `max_passes=3` by default unless the user explicitly provides another
-     bound.
-   - Decide artifact names up front:
-     - `REVIEW-P1.md`, `REVIEW-P2.md`, ... for reviewer reports.
-     - `REVIEW_DISPOSITION.md` for the cumulative finding disposition trail.
-     - Prefer `local://` artifacts unless the user explicitly wants repo-local
-       planning files.
+   - If scope or success criteria are ambiguous, run `socratic-review` first and
+     fold its decisions into the plan (or a loop-owned
+     `local://REVIEW_DECISIONS.md`). `socratic-review` natively writes a
+     repo-root `DECISION_LOG.md`; redirect that into the loop's `local://`
+     artifact unless the user wants repo-local planning files.
+   - Set `max_passes=3` unless the user gave another bound.
+   - Fix artifact names up front (see **Artifacts**). Prefer `local://` unless
+     the user wants repo-local planning files.
 
-2. **Spawn an independent reviewer.**
-   - Use a subagent, not inline self-review.
-   - Instruct it to use `review-plans` on the current plan artifact.
-   - Instruct it to skip builds, tests, formatters, and project-wide checks; the
-     reviewer only reads and reports.
-   - Require it to write the full report directly to the exact review path for
-     this pass. Tell it not to use `review-plans`' default `REVIEW.md` path.
-   - Require counts of Critical, Warning, and Note findings in the final line,
-     plus the path where it wrote the review.
+2. **Review (Plan primitive).** Spawn a fresh subagent and have it run
+   `review-plans` on the current plan artifact. The assignment must require it to:
+   - read and report only — skip builds, tests, formatters, project-wide checks;
+   - deliver its report — a writable reviewer writes it to the pass path; a
+     read-only reviewer returns it inline — never via `review-plans`' default
+     `REVIEW.md`; the main agent then stores it per **Artifacts**;
+   - end with exact counts `Critical=<n>, Warning=<n>, Note=<n>` (and the review
+     path when it wrote a file).
 
-   Suggested assignment shape:
+3. **Validate output.** Locate this pass's review: at the pass path when the main
+   agent is writable, or in the reviewer's inline return (conversation/IRC) when
+   the main agent is in plan mode. Read it before extracting findings. If the
+   counts are missing, derive them from the `🔴`/`🟡`/`🟢` headings. If the path
+   is missing or unreadable, ask the reviewer once over IRC; if still unreadable,
+   rerun the pass. Never advance without a readable review and exact counts.
 
-   ```text
-   # Target
-   Review <plan path> using the review-plans skill. Do not modify the plan.
+4. **Revise (address-review pattern).** Extract every Critical, Warning, and Note
+   finding and assign each a stable ID `P<pass>-<C|W|N><ordinal>` (e.g. `P1-C1`,
+   `P1-W2`). Triage each finding with the `address-review` method — verify it
+   against the plan and referenced repo context, then resolve it by editing the
+   plan, partially resolve it, or decline it with evidence. For plan-only edits,
+   verification means checking the revised plan and referenced repo context; do
+   not run builds, tests, linters, or formatters unless executable artifacts
+   changed. Record exactly one disposition per finding in the trail (see
+   **Artifacts**); never silently skip a Note.
 
-   # Change
-   Produce a categorized plan review with Critical/Warning/Note findings,
-   evidence, risk, recommendation, and why. Write the full report directly to
-   <review path>. Do not write to, overwrite, or rely on the default REVIEW.md
-   path.
+5. **Re-review (Loop primitive).** Spawn a new reviewer on the revised plan with a
+   new review path. Never reuse a prior review as proof the plan is now clean.
+   Repeat from step 2 until a stop condition holds.
 
-   # Acceptance
-   Final response includes the review path and exact finding counts in the form
-   Critical=<n>, Warning=<n>, Note=<n>. Skip all builds, tests, formatters, and
-   project-wide commands.
-   ```
+## Artifacts
 
-3. **Read and validate reviewer output.**
-   - Read the exact review path chosen for this pass before extracting findings.
-   - If the reviewer did not report counts, parse them from the `🔴`/`🟡`/`🟢`
-     finding headings.
-   - If the review path is missing or unreadable, ask the reviewer once over IRC
-     for the exact path. If that does not produce a readable report, rerun the
-     pass with the same plan and review path.
-   - Never advance to addressing or the next pass without a readable review
-     artifact and exact Critical/Warning/Note counts.
+Where the loop's process files live is governed by one switch — the **main
+agent's** writability.
 
-4. **Address every finding.**
-   - Extract every Critical, Warning, and Note finding.
-   - Assign a stable finding ID using the pass, severity, and ordinal within that
-     severity: `P1-C1`, `P1-W2`, `P1-N3`.
-   - For each finding:
-     - Verify it against the plan and any referenced repo context.
-     - Resolve warranted findings by editing the plan.
-     - Partially resolve findings when the review is directionally right but the
-       exact recommendation is wrong for this plan.
-     - Decline wrong, duplicate, out-of-scope, stylistic-only, or non-actionable
-       findings with evidence.
-   - Append a disposition entry for every finding:
+**Main agent writable (normal).** Keep two deterministic files:
 
-   ```markdown
-   ### P<N>-<C|W|N><ordinal> — <severity>: <finding title>
-   - Source: <review path>
-   - Disposition: Resolved | Partially resolved | Won't fix
-   - Changed: <plan section/file changed, or "None">
-   - Evidence: <specific change made or evidence-backed reason for decline>
-   ```
+- `REVIEW-P1.md`, `REVIEW-P2.md`, … — one report per pass (the reviewer writes
+  it, or the main agent saves the reviewer's inline return there).
+- `REVIEW_DISPOSITION.md` — cumulative finding trail, one entry per finding:
 
-   Every finding gets exactly one disposition. Never silently skip Notes; either
-   incorporate them, convert them into explicit constraints, or decline them with
-   evidence.
+```markdown
+### P<N>-<C|W|N><ordinal> — <severity>: <finding title>
+- Source: <review path>
+- Disposition: Resolved | Partially resolved | Won't fix
+- Changed: <plan section/file changed, or "None">
+- Evidence: <specific change made or evidence-backed reason for decline>
+```
 
-5. **Repeat on the revised plan.**
-   - Spawn a new reviewer subagent with the revised plan and a new review path.
-   - Do not reuse the previous reviewer output as proof that the plan is now
-     clean.
-   - Continue until the latest review has no actionable Critical, Warning, or
-     Note findings, or until the configured pass bound is reached.
+Prefer `local://` artifacts unless the user wants repo-local planning files.
+These are process artifacts; do not commit them unless the user asks.
 
-## Stop conditions
+**Main agent in plan mode** (only the plan file is writable, e.g. hardening a
+staged plan). No separate files are possible — read each reviewer's inline return
+during the loop, and fold the per-pass counts and the same per-finding
+dispositions into the final closure report (append them as a "Dispositions"
+section and set the closure's `Disposition trail:` to `inlined below`). The
+revised plan is the durable artifact.
 
-Stop only when one of these is true:
+## Stop conditions (the Goal)
+
+Stop only when one is true:
 
 - The latest independent review reports `Critical=0, Warning=0, Note=0`.
 - The latest review contains only findings already dispositioned as duplicate,
-  outside scope, impossible to verify with available evidence, stylistic-only, or
-  intentionally not part of the plan; the final report must list those decisions
-  explicitly.
-- `max_passes` is reached. Perform final maintainer triage: unresolved
-  actionable findings mean the review loop is incomplete; duplicate,
-  stylistic-only, out-of-scope, or otherwise non-actionable findings may be
-  closed with explicit evidence; another pass requires explicit user opt-in.
-- The user explicitly stops the loop.
+  out of scope, unverifiable with available evidence, stylistic-only, or
+  intentionally excluded; list those decisions explicitly.
+- `max_passes` is reached: unresolved actionable findings mean the loop is
+  incomplete; non-actionable findings may be closed with evidence; another pass
+  needs explicit user opt-in.
+- The user stops the loop.
 
-Do not stop merely because Critical and Warning findings are gone. Notes can
-still encode missing acceptance criteria, ambiguous contracts, or future-reader
-confusion.
+Do not stop merely because Critical and Warning are gone — a Note can encode a
+missing acceptance criterion, an ambiguous contract, or future-reader confusion.
 
 ## Final response
-
-Return a terse closure report:
 
 ```markdown
 Review loop complete.
@@ -167,18 +156,15 @@ Remaining actionable items: <none or bullet list>
 Remaining non-actionable items: <none or bullet list>
 ```
 
-If the plan itself changed, mention the changed plan path. Do not paste the full
-plan unless the user asks.
+Mention the changed plan path if it moved. Do not paste the full plan unless
+asked.
 
 ## Guardrails
 
-- Keep authoring and review roles separate. The main agent revises; subagents
+- Authoring and review roles stay separate: the main agent revises, subagents
   review.
-- Preserve reviewer criticism. Do not rewrite a finding to make it easier to
-  close.
+- Preserve reviewer criticism; never reword a finding to make it easier to close.
 - Resolve the root gap in the plan, not just the wording that triggered the
   reviewer.
-- Prefer a boring finite loop over an endless perfection loop: evidence-backed
-  `Won't fix` is valid when a finding is wrong or outside scope.
-- Planning and review files are process artifacts. Do not commit them unless the
-  user explicitly asks.
+- An evidence-backed `Won't fix` is valid; prefer a finite loop over endless
+  perfection.
