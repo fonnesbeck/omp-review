@@ -11,15 +11,19 @@
     "skill"
   ],
   "scripts": {
-    "check": "npm pkg get name version omp",
-    "build": "npm run check"
+    "validate:skills": "node scripts/validate-skills.mjs",
+    "check": "npm run validate:skills",
+    "smoke:install": "omp plugin install . --dry-run",
+    "smoke:plugin": "omp plugin list"
   },
+  "files": [
+    "skills",
+    "scripts",
+    "README.md",
+    "LICENSE"
+  ],
   "dependencies": {
     "@oh-my-pi/pi-coding-agent": "^16.1.5"
-  },
-  "devDependencies": {
-    "@types/node": "^25.9.1",
-    "typescript": "^5.9.3"
   },
   "omp": {}
 }

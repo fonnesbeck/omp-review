@@ -298,4 +298,11 @@ Dockerfile and build instructions to the plan.
 **Why:** Beyond-scope work is not inherently bad, but it should be documented
 so the team understands the full delivery surface and can maintain it going
 forward.
+---
+result:
+  kind: implementation-review
+  critical: 2
+  warning: 5
+  note: 2
+  artifact: local://IMPLEMENTATION_REVIEW.md
 ```

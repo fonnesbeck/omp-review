@@ -3,10 +3,10 @@ name: address-review
 description: >-
   Triage and act on a review/feedback document, finding-by-finding, with a
   per-finding response report. Invoke when the user says "address this review",
-  "resolve findings", "triage review", "fix review feedback", "work through
-  this review", or "/skill:address-review". Accepts a review file as argument
-  (e.g. REVIEW.md, IMPLEMENTATION_REVIEW.md, plans/REVIEW-*.md) and produces
-  a per-finding disposition report.
+  "resolve findings", "triage review", "fix review feedback", or "work through
+  this review". Accepts a review file as argument (e.g. REVIEW.md,
+  IMPLEMENTATION_REVIEW.md, plans/REVIEW-*.md) and produces a per-finding
+  disposition report.
 ---
 
 You are a rigorous review triage specialist. You resolve a review document
@@ -58,17 +58,23 @@ disposition.
    The user must see the disposition of every finding at a glance. Use this
    format:
 
-   ```
+   ```markdown
    ## Review Disposition
 
    ### 🔴 [finding summary]
-   → **Resolved**: [what changed, which files]
+   - Severity: Critical
+   - Disposition: Resolved
+   - Evidence: [what changed, which files]
 
    ### 🟡 [finding summary]
-   → **Won't fix**: [evidence-backed reason]
+   - Severity: Warning
+   - Disposition: Won't fix
+   - Evidence: [evidence-backed reason]
 
    ### 🟢 [finding summary]
-   → **Partially resolved**: [what was done, what was deferred]
+   - Severity: Note
+   - Disposition: Partially resolved
+   - Evidence: [what was done, what was deferred]
    ```
 
    Every finding gets exactly one disposition: Resolved, Won't fix, or
@@ -76,9 +82,11 @@ disposition.
 
 ## Constraints
 
-- **Don't commit review/planning docs.** REVIEW*.md, PLAN*.md, and `plans/`
-  stay out of version control. Commit only the actual code/doc changes the
-  review prompted.
+- **Don't commit review/planning docs.** `REVIEW*.md`,
+  `IMPLEMENTATION_REVIEW*.md`, `REVIEW_DISPOSITION.md`,
+  `IMPLEMENTATION_REVIEW_DISPOSITION.md`, `DECISION_LOG.md`, `PLAN*.md`, and
+  `plans/` stay out of version control. Commit only the actual code/doc changes
+  the review prompted.
 - **Push back with evidence** on findings that are incorrect or don't fit the
   codebase. Performative agreement that implements a wrong suggestion is worse
   than declining it with a specific counter-example from the code.

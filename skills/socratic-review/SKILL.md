@@ -1,14 +1,15 @@
 ---
 name: socratic-review
 description: >-
-  Rigorous Socratic questioning to stress-test a plan or design until hidden
-  assumptions surface and dependencies resolve. Invoke when the user says
-  "review my plan," "stress-test this," "find the gaps," "grill me," or asks
-  for critical interrogation of their thinking. Also available as
-  /skill:socratic-review.
+  Interactive Socratic questioning to discover uncertainty before a written plan
+  is ready. Invoke when the user says "stress-test this idea", "find hidden
+  assumptions", "grill me", or asks for Socratic questioning or critical
+  interrogation of their thinking.
 ---
 
 Interview the user relentlessly about every aspect of this plan until we reach a shared understanding. Walk down each branch of the design tree, resolving dependencies between decisions one-by-one.
+
+Use review-plans instead when the user provides a written plan and asks for an audit rather than an interview.
 
 ## How to work
 
@@ -38,7 +39,7 @@ When stopping, always produce the decision log. Never end with "anything else?"
 
 ## Output
 
-1. Write the decision log to a file named `DECISION_LOG.md` in the project root. Load the template from [references/decision-log-template.md](references/decision-log-template.md).
+1. Write the decision log to `local://DECISION_LOG.md` by default. Write repo-root `DECISION_LOG.md` only if the user explicitly asks for repo-local planning artifacts. Load the template from [references/decision-log-template.md](references/decision-log-template.md).
 2. Summarize in chat: one paragraph on the most critical assumption and the single biggest risk.
 
 For a concrete example of tone and branch management, see [references/example-review.md](references/example-review.md).

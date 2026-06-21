@@ -24,6 +24,13 @@ The package is a pure omp skill plugin: all behavior lives in `skills/*/SKILL.md
 | `address-review` | Triage and address review findings with evidence-backed dispositions. |
 | `socratic-review` | Stress-test unresolved assumptions in a plan through focused questions. |
 
+## Artifact policy
+
+- Process artifacts default to `local://`.
+- Repo-local artifacts are written only when the user asks.
+- Repo-local review/planning artifacts are not committed.
+- Canonical repo-local basenames: `REVIEW*.md`, `IMPLEMENTATION_REVIEW*.md`, `REVIEW_DISPOSITION.md`, `IMPLEMENTATION_REVIEW_DISPOSITION.md`, and `DECISION_LOG.md`.
+
 ## Install
 
 ```bash
@@ -32,11 +39,19 @@ cd omp-review
 omp install .
 ```
 
-`omp install .` links this package into omp's plugin directory. No extra command is required to install the skills.
+`omp install .` links this package into omp's plugin directory. Existing omp sessions load plugins at startup, so restart the session after installing.
+
+Verify the installed plugin registry with:
+
+```bash
+omp plugin list
+```
+
+You should see `omp-review@1.0.0`. The review workflows are skill-only features, so `omp-review` does not install any extensions.
 
 ## Optional local verification
 
-These commands check this checkout directly without depending on the installed plugin state:
+These commands check this checkout directly without depending on the installed plugin registry:
 
 ```bash
 omp --no-session --plugin-dir . -p '/skills'
@@ -80,7 +95,13 @@ For a finished implementation:
 
 This compares the implementation to the plan and reports missing requirements, divergences, testing gaps, simplification opportunities, dependency issues, and beyond-scope changes.
 
+## Development checks
+
+- `npm run check` — validates skill frontmatter, expected skill entries, and local reference integrity without invoking an omp session.
+- `npm run smoke:install` — dry-runs linking this checkout as an omp plugin.
+- `npm run smoke:plugin` — lists installed omp plugins so `omp-review@1.0.0` visibility can be checked after install.
+
 ## Requirements
 
 - omp.
-- npm, only for package metadata checks (`npm run check`).
+- npm, for package metadata and validation scripts.

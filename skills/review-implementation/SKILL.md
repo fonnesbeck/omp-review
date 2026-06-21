@@ -80,7 +80,7 @@ You do not modify any files. You only observe, compare, and report.
 5. **Evaluate simplification, parsimony, and efficiency.** Even if the plan is
    silent on code style or performance targets, review the plan-touched
    implementation for opportunities to make the code simpler without changing
-   behavior. Apply the same principles as the code-simplifier simplification-turn instructions, but remain read-only and do not invoke `/simplify` or spawn a simplifier agent.
+   behavior. Apply the simplification, parsimony, and efficiency checks listed below; remain read-only and do not invoke `/simplify` or spawn a simplifier agent.
    - **Functionality preservation:** Recommendations must preserve externally
      observable behavior. If a simplification could change behavior, state the
      required test or guardrail before recommending it.
@@ -125,9 +125,13 @@ You do not modify any files. You only observe, compare, and report.
 
 7. **Produce the report.** Write the report using the exact output format
    defined below (with 🔴/🟡/🟢 markers, Plan requirement/Implementation
-   status/Assessment/Recommendation/Why blocks). For substantial
-   implementations, save it to `IMPLEMENTATION_REVIEW.md` in the project root.
-   Always provide a brief summary in chat.
+   status/Assessment/Recommendation/Why blocks, and the required `result:`
+   footer). Set `result.artifact` to the actual artifact location. For
+   substantial standalone implementation reviews, write
+   `local://IMPLEMENTATION_REVIEW.md` by default. Write repo-local
+   `IMPLEMENTATION_REVIEW*.md` only when the user explicitly asks for repo-local
+   artifacts. Use `artifact: inline` only when the active runtime is read-only
+   and cannot write `local://` artifacts. Always provide a brief summary in chat.
 
 ## Review categories
 

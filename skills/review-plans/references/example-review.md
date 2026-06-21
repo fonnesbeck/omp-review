@@ -164,4 +164,11 @@ monitoring plan (prediction distribution tracking, ground-truth feedback loop).
 
 **Why:** Every deployment plan needs an escape hatch. Explicit criteria remove
 ambiguity and protect both the team and the business from a failed launch.
+---
+result:
+  kind: plan-review
+  critical: 3
+  warning: 3
+  note: 0
+  artifact: local://REVIEW.md
 ```

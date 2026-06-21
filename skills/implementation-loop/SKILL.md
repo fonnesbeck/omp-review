@@ -1,7 +1,7 @@
 ---
 name: implementation-loop
 description: >-
-  Drive a complete implementation from a plan through a bounded implement → implementation-review → address-review loop, then run an inline simplification pass using the code-simplifier skill instructions; never spawn code-simplifier as a task subagent. Use this skill when the user asks to "run an implementation loop", "implement this plan and iterate until clean", "execute a plan with implementation review", "spawn an implementation reviewer and address findings", or wants an implementation analog of review-loop.
+  Drive a complete implementation from a plan through a bounded implement → implementation-review → address-review loop, then run an inline simplification pass using the code-simplifier skill instructions; never spawn code-simplifier as a task subagent. Use this skill when the user asks to "run an implementation loop", "implement this plan and iterate until clean", "execute a plan with implementation review", "spawn an implementation reviewer and address findings", or wants an implementation analog of review-loop. Use review-loop instead when the deliverable is only a pre-execution plan or proposal.
 ---
 
 # Implementation Loop
@@ -69,14 +69,17 @@ Set `max_passes=3` unless the user provides a different bound.
      - implementation scope: `<touched files/directories>`
      - review output: `<artifact root>/IMPLEMENTATION_REVIEW-P<N>.md`
    - The reviewer assignment must require read/report only, no edits, no formatters, and no project-wide build/test/lint unless needed only to inspect existing output.
-   - Require the reviewer to end with exact counts:
+   - Require the reviewer to end with a machine-readable `result:` footer
+     containing `kind: implementation-review`, integer `critical`, `warning`,
+     and `note` counts, and the review `artifact`.
+   - Also require legacy counts for backward compatibility when practical:
 
      ```text
      Critical=<n>, Warning=<n>, Note=<n>
      ```
 
    - If the reviewer returns inline output instead of writing a report, save that exact report text to the expected artifact path before extracting findings.
-   - If counts are missing, derive them from `🔴` / `🟡` / `🟢` headings. If the report is unreadable or has no severity markers, ask the reviewer once for a corrected report; if still invalid, rerun that pass with a new reviewer.
+   - Parse `result:` first for counts and artifact path. Accept it only when `kind` is `implementation-review` and all counts are base-10 integers. If the footer is absent, malformed, or has the wrong kind, fall back to `Critical=<n>, Warning=<n>, Note=<n>` text and then to `🔴` / `🟡` / `🟢` heading counts. If the report is unreadable or has no exact counts, ask the reviewer once for a corrected report; if still invalid, rerun that pass with a new reviewer.
 
 4. **Extract and disposition findings.**
    - Extract every Critical, Warning, and Note finding from the current `IMPLEMENTATION_REVIEW-P<N>.md`.
@@ -145,11 +148,11 @@ Do not stop merely because Critical and Warning are gone. A Note can encode a mi
 
 Run simplification only after the normal implementation-review loop closes as complete or complete-with-non-actionable findings.
 
-`code-simplifier` in cutie-pi is a skill/extension prompt, not an independent task subagent. Never call `task(agent="code-simplifier")`, never spawn a `code-simplifier` subagent, and never treat simplification as an independent review. The invoking implementation-loop agent owns the edits and verification.
+`code-simplifier` is an optional external skill loaded from `skill://code-simplifier`, not a bundled omp-review skill and not an independent task subagent. Never call `task(agent="code-simplifier")`, never spawn a `code-simplifier` subagent, and never treat simplification as an independent review. The invoking implementation-loop agent owns the edits and verification.
 
 Simplification invocation:
-- If the cutie-pi `/simplify` extension command has already queued a simplification follow-up turn, that follow-up turn receives the `skills/code-simplifier/SKILL.md` instructions through the extension; finish that turn and then resume this protocol.
-- Otherwise, read `skill://code-simplifier` if it is not already in context, scope it to files modified by the initial implementation or review dispositions, and apply those instructions inline yourself.
+- Read `skill://code-simplifier` if it is not already in context, scope it to files modified by the initial implementation or review dispositions, and apply those instructions inline yourself.
+- If `skill://code-simplifier` cannot be read, record `Simplification: No changes — skill://code-simplifier unavailable` and proceed directly to the final response. Do not invent a local fallback simplifier.
 - If no safe simplification exists, record `Simplification: No changes` and proceed directly to the final response.
 
 Rerun the same safe verification commands that proved the final disposition pass, or reuse `verification=Not run — no safe project-local command found; inspected <files/config>` when no safe command exists.

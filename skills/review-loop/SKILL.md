@@ -7,7 +7,9 @@ description: >-
   `address-review` triage pattern. Use this skill when the user asks to "run a
   review loop", "review and address until clean", "spawn a reviewer and integrate
   comments", "repeat review until all concerns are resolved", or wants a reusable
-  loop that combines review-plans with address-review.
+  loop that combines review-plans with address-review. Use implementation-loop
+  instead when the deliverable is executable code, configuration, or documentation
+  produced from a plan.
 ---
 
 # Review Loop
@@ -56,9 +58,9 @@ then loop against that file so every pass reviews the same text.
    - Read the plan artifact.
    - If scope or success criteria are ambiguous, run `socratic-review` first and
      fold its decisions into the plan (or a loop-owned
-     `local://REVIEW_DECISIONS.md`). `socratic-review` natively writes a
-     repo-root `DECISION_LOG.md`; move or copy that into the loop's `local://`
-     artifact unless the user wants repo-local planning files.
+     `local://REVIEW_DECISIONS.md`). Store decision artifacts per the shared
+     artifact policy: prefer `local://` unless the user explicitly asks for
+     repo-local planning files.
    - Set `max_passes=3` unless the user gave another bound.
    - Fix artifact names up front (see **Artifacts**). Prefer `local://` unless
      the user wants repo-local planning files.
@@ -69,16 +71,19 @@ then loop against that file so every pass reviews the same text.
    - deliver its report — a writable reviewer writes it to the pass path; a
      read-only reviewer returns it inline — never via `review-plans`' default
      `REVIEW.md`; the main agent then stores it per **Artifacts**;
-   - end with exact counts `Critical=<n>, Warning=<n>, Note=<n>` (and the review
-     path when it wrote a file).
+   - end with a machine-readable `result:` footer containing `kind: plan-review`,
+     integer `critical`, `warning`, and `note` counts, and the review `artifact`;
+   - also end with legacy counts `Critical=<n>, Warning=<n>, Note=<n>` for
+     backward compatibility when practical.
 
-3. **Validate output.** Locate this pass's review: at the pass path when the main
-   agent is writable, or in the reviewer's inline return (conversation/chat) when
-   the main agent is in plan mode. Read it before extracting findings. If the
-   counts are missing, derive them from the `🔴`/`🟡`/`🟢` headings. If the path
-   is missing or unreadable, ask the reviewer once over the conversation channel;
-   if still unreadable, rerun the pass. Never advance without a readable review
-   and exact counts.
+3. **Validate output.** Locate this pass's review by first parsing the `result:`
+   footer for counts and artifact path. Accept that footer only when `kind` is
+   `plan-review` and all counts are base-10 integers. If the footer is absent,
+   malformed, or has the wrong kind, fall back to `Critical=<n>, Warning=<n>,
+   Note=<n>` text and then to `🔴`/`🟡`/`🟢` heading counts. If the path is missing
+   or unreadable, ask the reviewer once over the conversation channel; if still
+   unreadable, rerun the pass. Never advance without a readable review and exact
+   counts.
 
 4. **Revise (address-review pattern).** Extract every Critical, Warning, and Note
    finding and assign each a stable ID `P<pass>-<C|W|N><ordinal>` (e.g. `P1-C1`,

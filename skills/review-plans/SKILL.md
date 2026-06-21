@@ -142,9 +142,11 @@ and produce concrete, shareable feedback that the original developer can act on.
 
 6. **Produce the report.** Write the report using the exact output format
    defined below (with 🔴/🟡/🟢 markers, Evidence/Risk/Recommendation/Why
-   blocks). If the plan is substantial (more than a few paragraphs or multiple
-   files), write the report to a file named `REVIEW.md` in the **same
-   directory as the plan file**. Always provide a brief summary in chat.
+   blocks, and the required `result:` footer). Set `result.artifact` to the
+   actual artifact location. For substantial standalone plan reviews, write
+   `local://REVIEW.md` by default. Write repo-local `REVIEW*.md` only when the
+   user explicitly asks for repo-local artifacts. Use `artifact: inline` only
+   when the active runtime is read-only and cannot write `local://` artifacts.
 
 ## Constraints
 
@@ -162,6 +164,10 @@ and produce concrete, shareable feedback that the original developer can act on.
 - Use severity labels consistently and justify Critical ratings with the
   specific risk they introduce.
 - Frame all feedback constructively for the developer who will receive it.
+- **Do not commit review/planning artifacts.** `REVIEW*.md`,
+  `IMPLEMENTATION_REVIEW*.md`, `REVIEW_DISPOSITION.md`,
+  `IMPLEMENTATION_REVIEW_DISPOSITION.md`, `DECISION_LOG.md`, `PLAN*.md`, and
+  `plans/` stay out of version control.
 
 ## Output format
 

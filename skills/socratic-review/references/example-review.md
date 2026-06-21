@@ -45,7 +45,7 @@ User wants to migrate a monolithic API to microservices.
 
 **Model:** Branch 2 resolved: autonomy pain is real and justifies the migration independently, but the combined 5-month timeline must hold. Here's the decision log.
 
-*(Writes `DECISION_LOG.md` using the template, then summarizes in chat.)*
+*(Writes `local://DECISION_LOG.md` by default using the template, then summarizes in chat. Repo-root `DECISION_LOG.md` is used only when repo-local planning artifacts were explicitly requested.)*
 
 **Model (chat summary):** The most critical assumption is that the 5-month timeline includes org redesign — if that slips, the ROI collapses against a 2-month monolith fix. The single biggest risk is that team autonomy and deployment speed are treated as a package deal; if one goal proves harder than expected, the other may not justify the migration alone.
 
@@ -54,4 +54,4 @@ User wants to migrate a monolithic API to microservices.
 - It resolved branch 1 (deployment goal + timeline) before moving to branch 2.
 - It surfaced an implicit dependency (org redesign) and corrected an estimate.
 - It asked for falsification: "would you still choose it if autonomy were solved?"
-- It delivered a concrete artifact (`DECISION_LOG.md`) and a concise chat summary.
+- It delivered a concrete artifact (`local://DECISION_LOG.md`) and a concise chat summary.

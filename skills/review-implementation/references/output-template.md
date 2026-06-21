@@ -73,6 +73,13 @@ reference]
 **Recommendation:** [Concrete next step the developer should take]
 
 **Why:** [Educational context]
+---
+result:
+  kind: implementation-review
+  critical: <number>
+  warning: <number>
+  note: <number>
+  artifact: <path-or-inline>
 ```
 
 Repeat the issue template for every finding within each category.

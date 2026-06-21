@@ -58,6 +58,13 @@ One paragraph summarizing:
 **Recommendation:** [Concrete next step the author should take]
 
 **Why:** [Educational context on why this matters]
+---
+result:
+  kind: plan-review
+  critical: <number>
+  warning: <number>
+  note: <number>
+  artifact: <path-or-inline>
 ```
 
 Repeat the issue template for every finding within each category. Include a
